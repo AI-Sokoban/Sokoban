@@ -1,5 +1,4 @@
-# Sokoban
+# Sokoban :skull:
+
 ## เอ๊ไอ๋
-```
-Sokoban > Rubrik = Color Link = Sudoku
-```
+
