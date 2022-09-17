@@ -9,11 +9,6 @@ class BoardManager:
     # ■ = block ที่อยู่ตรง goal
     # . = goal-
 
-    up = action.Up()
-    down = action.Down()
-    left = action.Left()
-    right = action.Right()
-
     def __init__(self, board):
         board_ = board.split('\n')[1:-1]
 
@@ -107,16 +102,16 @@ class BoardManager:
         
         # up
         if actions[0]:
-            yield BoardManager.up
+            yield action.Up
         # down
         if actions[1]:
-            yield BoardManager.down
+            yield action.Down
         # left
         if actions[2]:
-            yield BoardManager.left
+            yield action.Left
         # right
         if actions[3]:
-            yield BoardManager.right
+            yield action.Right
 
     """
     alloc(bool) - ถ้า true จะทำ deepcopy กับ board เพื่อสร้าง board ใน state ใหม่ขึ้นมา

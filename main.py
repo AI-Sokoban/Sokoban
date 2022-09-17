@@ -1,9 +1,5 @@
-from turtle import down
-from action import Action
+import action
 from board import BoardManager
-from action import Action
-import textwrap
-import os
 import pygame
 # a = player
 # @ = player ที่ทับบน goal
@@ -56,7 +52,6 @@ def drawBoard():
 
 level = 0
 sokoban = BoardManager(data[level])
-act = Action(sokoban)
 
 
 pygame.init()
@@ -79,15 +74,17 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
+        
+        validActions = sokoban.getValidActions()
         if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                act.left()
-            if event.key == pygame.K_RIGHT:
-                act.right()
-            if event.key == pygame.K_UP:
-                act.up()
-            if event.key == pygame.K_DOWN:
-                act.down()
+            if event.key == pygame.K_LEFT and action.Left in validActions:
+                sokoban.push(action.Left)
+            if event.key == pygame.K_RIGHT and action.Right in validActions:
+                sokoban.push(action.Right)
+            if event.key == pygame.K_UP and action.Up in validActions:
+                sokoban.push(action.Up)
+            if event.key == pygame.K_DOWN and action.Down in validActions:
+                sokoban.push(action.Down)
             drawBoard()
             if sokoban.isGameOver():
                 level += 1

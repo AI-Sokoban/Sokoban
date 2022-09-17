@@ -12,7 +12,9 @@ method restore ในทุก class จะทำงานถูกต้อง�
 
 
 class Up:
-    def execute(self, board, alloc=False):
+
+    @staticmethod
+    def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -36,7 +38,8 @@ class Up:
 
         return newBoard, isBoxPush
 
-    def restore(self, board, isBoxPush, alloc=False):
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -58,7 +61,9 @@ class Up:
         
 
 class Down:
-    def execute(self, board, alloc=False):
+
+    @staticmethod
+    def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -82,7 +87,8 @@ class Down:
 
         return newBoard, isBoxPush
 
-    def restore(self, board, isBoxPush, alloc=False):
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -104,7 +110,9 @@ class Down:
 
 
 class Left:
-    def execute(self, board, alloc=False):
+
+    @staticmethod
+    def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -128,7 +136,8 @@ class Left:
 
         return newBoard, isBoxPush
 
-    def restore(self, board, isBoxPush, alloc=False):
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -150,7 +159,9 @@ class Left:
 
 
 class Right:
-    def execute(self, board, alloc=False):
+    
+    @staticmethod
+    def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
@@ -174,7 +185,8 @@ class Right:
 
         return newBoard, isBoxPush
 
-    def restore(self, board, isBoxPush, alloc=False):
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
         i, j = board.playerI, board.playerJ
 
         newBoard = board
