@@ -1,0 +1,11 @@
+
+PLAYER = "a"
+PLAYER_ON_GOAL = "@"
+BOX = "□"
+BOX_ON_GOAL = "■"
+GOAL = "."
+WALL = "#"
+EMPTY = " "
+
+OBJECT = {BOX, BOX_ON_GOAL, WALL}
+BLOCK = {BOX, BOX_ON_GOAL}

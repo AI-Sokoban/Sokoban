@@ -1,3 +1,5 @@
+import action
+from tile import BLOCK, BOX, OBJECT, PLAYER, PLAYER_ON_GOAL, WALL
 
 class BoardManager:
 
@@ -6,6 +8,11 @@ class BoardManager:
     # □ = block ที่ไม่อยู่ตรง goal
     # ■ = block ที่อยู่ตรง goal
     # . = goal-
+
+    up = action.Up()
+    down = action.Down()
+    left = action.Left()
+    right = action.Right()
 
     def __init__(self, board):
         board_ = board.split('\n')[1:-1]
@@ -38,13 +45,13 @@ class BoardManager:
     def playerPosition(self):
         for i in range(len(self.board_lst)):
             for j in range(len(self.board_lst[i])):
-                if self.board_lst[i][j] == 'a' or self.board_lst[i][j] == '@':
+                if self.board_lst[i][j] == PLAYER or self.board_lst[i][j] == PLAYER_ON_GOAL:
                     return i, j
 
     def isGameOver(self):
         for i in range(len(self.board_lst)):
             for j in range(len(self.board_lst[i])):
-                if self.board_lst[i][j] == '□':
+                if self.board_lst[i][j] == BOX:
                     return False
         return True
 
@@ -55,3 +62,61 @@ class BoardManager:
             board_[b] = list(board_[b])
 
         self.board_lst = board_
+
+    def checkMovingState(self):
+        boardlist = self.board_lst
+        i, j = self.playerI, self.playerJ
+
+        up,down,left,right = True,True,True,True
+
+        #up
+        if boardlist[i-1][j] in OBJECT:
+            if boardlist[i-1][j] == WALL: #เจอกำแพง
+                up = False
+            elif (boardlist[i-1][j] in BLOCK) and (boardlist[i-2][j] in OBJECT): #เจอกล่อง แล้วกล่องชนกับ object
+                up = False
+
+        #down
+        if boardlist[i+1][j] in OBJECT:
+            if boardlist[i+1][j] == WALL: #เจอกำแพง
+                down = False
+            elif (boardlist[i+1][j] in BLOCK) and (boardlist[i+2][j] in OBJECT): #เจอกล่อง แล้วกล่องชนกับ object
+                down = False
+
+        #left
+        if boardlist[i][j-1] in OBJECT:
+            if boardlist[i][j-1] == WALL: #เจอกำแพง
+                left = False
+            elif (boardlist[i][j-1] in BLOCK) and (boardlist[i][j-2] in OBJECT): #เจอกล่อง แล้วกล่องชนกับ object
+                left = False
+
+        #right
+        if boardlist[i][j+1] in OBJECT:
+            if boardlist[i][j+1] == WALL: #เจอกำแพง
+                right = False
+            elif (boardlist[i][j+1] in BLOCK) and (boardlist[i][j+2] in OBJECT): #เจอกล่อง แล้วกล่องชนกับ object
+                right = False
+
+        return up,down,left,right
+
+
+    def getValidActions(self):
+        actions = self.checkMovingState()
+        
+        # up
+        if actions[0]:
+            yield BoardManager.up
+        # down
+        if actions[1]:
+            yield BoardManager.down
+        # left
+        if actions[2]:
+            yield BoardManager.left
+        # right
+        if actions[3]:
+            yield BoardManager.right
+
+
+    def pushAction(self, action):
+        newBoard = action.execute(self)
+        return newBoard
