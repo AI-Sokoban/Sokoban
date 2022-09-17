@@ -26,6 +26,8 @@ class BoardManager:
         self.playerI = i
         self.playerJ = j
 
+        self.history = []
+
     def __str__(self):
         return self.getBoard()
 
@@ -116,7 +118,21 @@ class BoardManager:
         if actions[3]:
             yield BoardManager.right
 
+    """
+    alloc(bool) - ถ้า true จะทำ deepcopy กับ board เพื่อสร้าง board ใน state ใหม่ขึ้นมา
 
-    def pushAction(self, action):
-        newBoard = action.execute(self)
+    return(BoardManager) - board ใน state ใหม่หลังจาก execute action ไปแล้ว
+    """
+    def push(self, action, alloc=False):
+        newBoard, isBoxPush = action.execute(self, alloc)
+        newBoard.history.append((action, isBoxPush))
         return newBoard
+
+    """
+    return(tuple[oldboard, action]) - action ล่าสุดกับ board ใน state เก่า
+    """
+    def pop(self, alloc=False):
+        recentlyAction, isBoxPush = self.history.pop()
+        board = recentlyAction.restore(self, isBoxPush, alloc)
+
+        return  board, recentlyAction
