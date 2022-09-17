@@ -1,5 +1,3 @@
-import pygame
-
 
 class BoardManager:
 
@@ -16,7 +14,10 @@ class BoardManager:
             board_[b] = list(board_[b])
 
         self.board_lst = board_
-        return
+
+        i, j = self.playerPosition()
+        self.playerI = i
+        self.playerJ = j
 
     def __str__(self):
         return self.getBoard()

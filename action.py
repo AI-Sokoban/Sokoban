@@ -50,7 +50,7 @@ class Action:
         if moving == False:
             return False
 
-        i,j = self.board_lst.playerPosition()
+        i, j = self.board_lst.playerI, self.board_lst.playerJ
         boardlist = self.board_lst.getBoardList()
 
         #move กล่อง ถ้ามี
@@ -62,6 +62,8 @@ class Action:
         boardlist[i-1][j] = "@" if boardlist[i-1][j] == "." else "a"
         boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
 
+        self.board_lst.playerI -= 1
+
         self.board_lst.updateBoard(boardlist)
         return True
 
@@ -71,7 +73,7 @@ class Action:
         if moving == False:
             return False
 
-        i,j = self.board_lst.playerPosition()
+        i, j = self.board_lst.playerI, self.board_lst.playerJ
         boardlist = self.board_lst.getBoardList()
 
         #move กล่อง ถ้ามี
@@ -83,6 +85,8 @@ class Action:
         boardlist[i+1][j] = "@" if boardlist[i+1][j] == "." else "a"
         boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
 
+        self.board_lst.playerI += 1
+
         self.board_lst.updateBoard(boardlist)
         return True
 
@@ -92,7 +96,7 @@ class Action:
         if moving == False:
             return False
 
-        i,j = self.board_lst.playerPosition()
+        i, j = self.board_lst.playerI, self.board_lst.playerJ
         boardlist = self.board_lst.getBoardList()
 
         #move กล่อง ถ้ามี
@@ -104,6 +108,8 @@ class Action:
         boardlist[i][j-1] = "@" if boardlist[i][j-1] == "." else "a"
         boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
 
+        self.board_lst.playerJ -= 1
+
         self.board_lst.updateBoard(boardlist)
         return True
 
@@ -113,7 +119,7 @@ class Action:
         if moving == False:
             return False
 
-        i,j = self.board_lst.playerPosition()
+        i, j = self.board_lst.playerI, self.board_lst.playerJ
         boardlist = self.board_lst.getBoardList()
 
         #move กล่อง ถ้ามี
@@ -125,5 +131,21 @@ class Action:
         boardlist[i][j+1] = "@" if boardlist[i][j+1] == "." else "a"
         boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
 
+        self.board_lst.playerJ += 1
+
         self.board_lst.updateBoard(boardlist)
         return True
+
+    def validActions(self):
+        actions = self.checkMovingState()
+        if actions[0]:
+            yield self.up
+
+        if actions[1]:
+            yield self.down
+
+        if actions[2]:
+            yield self.left
+
+        if actions[3]:
+            yield self.right
