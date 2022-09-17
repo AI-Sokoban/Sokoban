@@ -17,9 +17,7 @@ class BoardManager:
 
         self.board_lst = board_
 
-        i, j = self.playerPosition()
-        self.playerI = i
-        self.playerJ = j
+        self.setPlayerPosition()
 
         self.history = []
 
@@ -38,6 +36,11 @@ class BoardManager:
 
     def updateBoard(self, new_board):
         self.board_lst = new_board
+
+    def setPlayerPosition(self):
+        i, j = self.playerPosition()
+        self.playerI = i
+        self.playerJ = j
 
     def playerPosition(self):
         for i in range(len(self.board_lst)):
@@ -59,6 +62,7 @@ class BoardManager:
             board_[b] = list(board_[b])
 
         self.board_lst = board_
+        self.setPlayerPosition()
 
     def checkMovingState(self):
         boardlist = self.board_lst
