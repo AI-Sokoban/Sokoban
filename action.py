@@ -1,151 +1,207 @@
-from board import BoardManager
-class Action:
+import copy
+from tile import *
 
-    def __init__(self,board_lst : BoardManager):
-        self.board_lst = board_lst
-        self.obj = ['□','■','#']
-        self.block = ['□','■']
-    
-        return
+"""
+board - มี type BoardManager
 
-    def checkMovingState(self):
-        i,j = self.board_lst.playerPosition()
-        boardlist = self.board_lst.getBoardList()
+method execute จะ return ค่าออกมาสองค่าคือ board ใน state ใหม่กับ boolean ที่บอกว่ากล่องถูกดันหรือไม่
+
+method restore ในทุก class จะทำงานถูกต้องเมื่อ action ทุกๆ action มีการเปลี่ยนแปลงไปยัง board เท่านั้น
+ควรจะใช้ method นี้เมื่อ action ที่ได้มาจาก getValidActions
+"""
+
+
+class Up:
+
+    @staticmethod
+    def execute(board, alloc=False):
+        i, j = board.playerI, board.playerJ
+
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
+
+        boardlist = newBoard.board_lst
         
-        up,down,left,right = True,True,True,True
-
-        #up
-        if boardlist[i-1][j] in self.obj:
-            if boardlist[i-1][j] == "#": #เจอกำแพง
-                up = False
-            elif (boardlist[i-1][j] in self.block) and (boardlist[i-2][j] in self.obj): #เจอกล่อง แล้วกล่องชนกับ object
-                up = False
-
-        #down
-        if boardlist[i+1][j] in self.obj:
-            if boardlist[i+1][j] == "#": #เจอกำแพง
-                down = False
-            elif (boardlist[i+1][j] in self.block) and (boardlist[i+2][j] in self.obj): #เจอกล่อง แล้วกล่องชนกับ object
-                down = False
-
-        #left
-        if boardlist[i][j-1] in self.obj:
-            if boardlist[i][j-1] == "#": #เจอกำแพง
-                left = False
-            elif (boardlist[i][j-1] in self.block) and (boardlist[i][j-2] in self.obj): #เจอกล่อง แล้วกล่องชนกับ object
-                left = False
-
-        #right
-        if boardlist[i][j+1] in self.obj:
-            if boardlist[i][j+1] == "#": #เจอกำแพง
-                right = False
-            elif (boardlist[i][j+1] in self.block) and (boardlist[i][j+2] in self.obj): #เจอกล่อง แล้วกล่องชนกับ object
-                right = False
-
-        return up,down,left,right
-
-    def up(self):
-        moving = self.checkMovingState()[0]
-
-        if moving == False:
-            return False
-
-        i, j = self.board_lst.playerI, self.board_lst.playerJ
-        boardlist = self.board_lst.getBoardList()
-
+        isBoxPush = False
         #move กล่อง ถ้ามี
-        if boardlist[i-1][j] in self.block:
-            boardlist[i-1][j] = "." if boardlist[i-1][j] == "■" else " "
-            boardlist[i-2][j] = "■" if boardlist[i-2][j] == "." else "□"
+        if boardlist[i-1][j] in BLOCK:
+            boardlist[i-1][j] = GOAL if boardlist[i-1][j] == BOX_ON_GOAL else EMPTY
+            boardlist[i-2][j] = BOX_ON_GOAL if boardlist[i-2][j] == GOAL else BOX
+            isBoxPush = True
 
         #move player
-        boardlist[i-1][j] = "@" if boardlist[i-1][j] == "." else "a"
-        boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
+        boardlist[i-1][j] = PLAYER_ON_GOAL if boardlist[i-1][j] == GOAL else PLAYER
+        boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
-        self.board_lst.playerI -= 1
+        newBoard.playerI -= 1
 
-        self.board_lst.updateBoard(boardlist)
-        return True
+        return newBoard, isBoxPush
 
-    def down(self):
-        moving = self.checkMovingState()[1]
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
+        i, j = board.playerI, board.playerJ
 
-        if moving == False:
-            return False
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
 
-        i, j = self.board_lst.playerI, self.board_lst.playerJ
-        boardlist = self.board_lst.getBoardList()
+        boardlist = newBoard.board_lst
 
+        boardlist[i+1][j] = PLAYER if boardlist[i+1][j] == EMPTY else PLAYER_ON_GOAL
+        if isBoxPush:
+            boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
+            boardlist[i-1][j] = EMPTY if boardlist[i-1][j] == BOX else GOAL
+        else:
+            boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
+
+        newBoard.playerI += 1
+
+        return newBoard
+        
+
+class Down:
+
+    @staticmethod
+    def execute(board, alloc=False):
+        i, j = board.playerI, board.playerJ
+
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
+
+        boardlist = newBoard.board_lst
+
+        isBoxPush = False
         #move กล่อง ถ้ามี
-        if boardlist[i+1][j] in self.block:
-            boardlist[i+1][j] = "." if boardlist[i+1][j] == "■" else " "
-            boardlist[i+2][j] = "■" if boardlist[i+2][j] == "." else "□"
+        if boardlist[i+1][j] in BLOCK:
+            boardlist[i+1][j] = GOAL if boardlist[i+1][j] == BOX_ON_GOAL else EMPTY
+            boardlist[i+2][j] = BOX_ON_GOAL if boardlist[i+2][j] == GOAL else BOX
+            isBoxPush = True
 
         #move player
-        boardlist[i+1][j] = "@" if boardlist[i+1][j] == "." else "a"
-        boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
+        boardlist[i+1][j] = PLAYER_ON_GOAL if boardlist[i+1][j] == GOAL else PLAYER
+        boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
-        self.board_lst.playerI += 1
+        newBoard.playerI += 1
 
-        self.board_lst.updateBoard(boardlist)
-        return True
+        return newBoard, isBoxPush
 
-    def left(self):
-        moving = self.checkMovingState()[2]
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
+        i, j = board.playerI, board.playerJ
 
-        if moving == False:
-            return False
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
 
-        i, j = self.board_lst.playerI, self.board_lst.playerJ
-        boardlist = self.board_lst.getBoardList()
+        boardlist = newBoard.board_lst
 
+        boardlist[i-1][j] = PLAYER if boardlist[i-1][j] == EMPTY else PLAYER_ON_GOAL
+        if isBoxPush:
+            boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
+            boardlist[i+1][j] = EMPTY if boardlist[i+1][j] == BOX else GOAL
+        else:
+            boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
+
+        newBoard.playerI -= 1
+
+        return newBoard
+
+
+class Left:
+
+    @staticmethod
+    def execute(board, alloc=False):
+        i, j = board.playerI, board.playerJ
+
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
+
+        boardlist = newBoard.board_lst
+
+        isBoxPush = False
         #move กล่อง ถ้ามี
-        if boardlist[i][j-1] in self.block:
-            boardlist[i][j-1] = "." if boardlist[i][j-1] == "■" else " "
-            boardlist[i][j-2] = "■" if boardlist[i][j-2] == "." else "□"
+        if boardlist[i][j-1] in BLOCK:
+            boardlist[i][j-1] = GOAL if boardlist[i][j-1] == BOX_ON_GOAL else EMPTY
+            boardlist[i][j-2] = BOX_ON_GOAL if boardlist[i][j-2] == GOAL else BOX
+            isBoxPush = True
 
         #move player
-        boardlist[i][j-1] = "@" if boardlist[i][j-1] == "." else "a"
-        boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
+        boardlist[i][j-1] = PLAYER_ON_GOAL if boardlist[i][j-1] == GOAL else PLAYER
+        boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
-        self.board_lst.playerJ -= 1
+        newBoard.playerJ -= 1
 
-        self.board_lst.updateBoard(boardlist)
-        return True
+        return newBoard, isBoxPush
 
-    def right(self):
-        moving = self.checkMovingState()[3]
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
+        i, j = board.playerI, board.playerJ
 
-        if moving == False:
-            return False
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
 
-        i, j = self.board_lst.playerI, self.board_lst.playerJ
-        boardlist = self.board_lst.getBoardList()
+        boardlist = newBoard.board_lst
 
+        boardlist[i][j+1] = PLAYER if boardlist[i][j+1] == EMPTY else PLAYER_ON_GOAL
+        if isBoxPush:
+            boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
+            boardlist[i][j-1] = EMPTY if boardlist[i][j-1] == BOX else GOAL
+        else:
+            boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
+
+        newBoard.playerJ += 1
+
+        return newBoard
+
+
+class Right:
+    
+    @staticmethod
+    def execute(board, alloc=False):
+        i, j = board.playerI, board.playerJ
+
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
+
+        boardlist = newBoard.board_lst
+
+        isBoxPush = False
         #move กล่อง ถ้ามี
-        if boardlist[i][j+1] in self.block:
-            boardlist[i][j+1] = "." if boardlist[i][j+1] == "■" else " "
-            boardlist[i][j+2] = "■" if boardlist[i][j+2] == "." else "□"
+        if boardlist[i][j+1] in BLOCK:
+            boardlist[i][j+1] = GOAL if boardlist[i][j+1] == BOX_ON_GOAL else EMPTY
+            boardlist[i][j+2] = BOX_ON_GOAL if boardlist[i][j+2] == GOAL else BOX
+            isBoxPush = True
 
         #move player
-        boardlist[i][j+1] = "@" if boardlist[i][j+1] == "." else "a"
-        boardlist[i][j] = "." if boardlist[i][j] == "@" else " "
+        boardlist[i][j+1] = PLAYER_ON_GOAL if boardlist[i][j+1] == GOAL else PLAYER
+        boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
-        self.board_lst.playerJ += 1
+        newBoard.playerJ += 1
 
-        self.board_lst.updateBoard(boardlist)
-        return True
+        return newBoard, isBoxPush
 
-    def validActions(self):
-        actions = self.checkMovingState()
-        if actions[0]:
-            yield self.up
+    @staticmethod
+    def restore(board, isBoxPush, alloc=False):
+        i, j = board.playerI, board.playerJ
 
-        if actions[1]:
-            yield self.down
+        newBoard = board
+        if alloc:
+            newBoard = copy.deepcopy(board)
 
-        if actions[2]:
-            yield self.left
+        boardlist = newBoard.board_lst
 
-        if actions[3]:
-            yield self.right
+        boardlist[i][j-1] = PLAYER if boardlist[i][j-1] == EMPTY else PLAYER_ON_GOAL
+        if isBoxPush:
+            boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
+            boardlist[i][j+1] = EMPTY if boardlist[i][j+1] == BOX else GOAL
+        else:
+            boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
+
+        newBoard.playerJ -= 1
+
+        return newBoard
