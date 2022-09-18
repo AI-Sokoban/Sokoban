@@ -1,5 +1,6 @@
 from board import BoardManager
 import action
+import copy
 
 # 8x8
 data = [
@@ -43,15 +44,15 @@ sokoban = BoardManager(data[level])
 sokoban.push(action.Up)
 print(sokoban)
 
-sokoban2 = BoardManager(data[level])
-sokoban2.push(action.Up)
+sokoban2 = copy.deepcopy(sokoban)
+
 
 visitedState = set()
 visitedState.add(sokoban)
 
 
 
-t1 = sokoban in visitedState
-t2 = sokoban2 in visitedState
-print(t1)
-print(t2)
+print('sokoban',hash(sokoban))
+print('sokoban2',hash(sokoban2))
+print('sokoban==sokoban2',sokoban==sokoban2)
+

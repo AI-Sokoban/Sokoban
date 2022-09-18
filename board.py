@@ -1,8 +1,12 @@
 import action
-from tile import BLOCK, BOX, OBJECT, PLAYER, PLAYER_ON_GOAL, WALL
+from tile import BLOCK, BOX, OBJECT, PLAYER, PLAYER_ON_GOAL, WALL,EMPTY,BOX_ON_GOAL,GOAL 
 import random
 
 HASHING_PIECE = 5
+
+HASH_TILE = [PLAYER, PLAYER_ON_GOAL, BOX,BOX_ON_GOAL,GOAL ]
+
+UNHASH_TILE = {EMPTY, WALL}
 
 def generateZobristTable(board):
     size = 0
@@ -136,7 +140,22 @@ class BoardManager:
             yield action.Right
 
     def __hash__(self):
-        pass
+        hash_value = 0
+        table = self.zobristTable
+
+        idx = 0
+        for i, row in enumerate(self.board_lst):
+            for j, tile in enumerate(row):
+                if tile not in UNHASH_TILE:
+                    tile_zobrist_idx = HASH_TILE.index(tile)
+                    hash_value ^= table[idx][tile_zobrist_idx]
+                idx += 1
+
+        return hash_value
+    def __eq__(self, other):
+        if isinstance(other, BoardManager):
+            return hash(self) == hash(other)
+        return False
 
     """
     alloc(bool) - ถ้า true จะทำ deepcopy กับ board เพื่อสร้าง board ใน state ใหม่ขึ้นมา
