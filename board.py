@@ -1,5 +1,22 @@
 import action
 from tile import BLOCK, BOX, OBJECT, PLAYER, PLAYER_ON_GOAL, WALL
+import random
+
+HASHING_PIECE = 5
+
+def generateZobristTable(board):
+    size = 0
+    for row in board:
+        for tile in row:
+            size += 1
+
+    table = [[0 for _ in range(HASHING_PIECE)] for _ in range(size)]
+
+    for i in range(size):
+        for j in range(HASHING_PIECE):
+            table[i][j] = random.getrandbits(64)
+
+    return table
 
 class BoardManager:
 
@@ -16,6 +33,7 @@ class BoardManager:
             board_[b] = list(board_[b])
 
         self.board_lst = board_
+        self.zobristTable = generateZobristTable(self.board_lst)
 
         self.setPlayerPosition()
 
@@ -116,6 +134,9 @@ class BoardManager:
         # right
         if actions[3]:
             yield action.Right
+
+    def __hash__(self):
+        pass
 
     """
     alloc(bool) - ถ้า true จะทำ deepcopy กับ board เพื่อสร้าง board ใน state ใหม่ขึ้นมา

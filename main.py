@@ -1,6 +1,7 @@
 import action
 from board import BoardManager
 import pygame
+import random
 
 from render import Renderer
 # a = player
