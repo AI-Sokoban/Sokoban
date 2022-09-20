@@ -73,7 +73,7 @@ class BoardManager:
     def isGameOver(self):
         for i in range(len(self.board_lst)):
             for j in range(len(self.board_lst[i])):
-                if self.board_lst[i][j] == BOX:
+                if self.board_lst[i][j] == GOAL or self.board_lst[i][j] == PLAYER_ON_GOAL:
                     return False
         return True
 
