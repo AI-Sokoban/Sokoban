@@ -1,6 +1,11 @@
+import time
 from board import BoardManager
 
 from collections import deque
+
+# renderer
+from render import Renderer
+import msvcrt
 
 # 8x8
 data = [
@@ -56,7 +61,7 @@ def solution(state: ProblemState):
 
     return list(reversed(result))
 
-def bfs(board: BoardManager):
+def bfs(board: BoardManager,renderer : Renderer = None):
     initialState = ProblemState(board)
     queue = deque([initialState])
 
@@ -71,15 +76,28 @@ def bfs(board: BoardManager):
 
         for action in state.board.getValidActions():
             newBoard = state.board.push(action, True)
+
+            #newBoard Renderer
+            if renderer : 
+                renderer.fromInstance(newBoard).render()
+                # wait for input to change render
+                # msvcrt.getch()
+                # time delay for renderer only
+                time.sleep(0.01)
+                
+
             childState = ProblemState(newBoard,action,state)
 
             if(childState not in exploredSet) and (childState not in queue):
                 if childState.board.isGameOver():
                     return solution(childState)
                 queue.append(childState)
-   
 
-level = 0
+level = 0  
+isRender = True
 sokoban = BoardManager(data[level])
-print(bfs(sokoban))
+renderer = Renderer(sokoban).setCaption("Sokoban")
+
+renderer.render()
+print(bfs(sokoban,renderer if isRender else None))
 
