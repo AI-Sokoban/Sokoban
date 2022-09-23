@@ -11,6 +11,12 @@ import pygame
 import time
 
 
+############ test memory
+import guppy
+from guppy import hpy
+import numpy as np
+
+
 # 8x8
 data = [
     """
@@ -42,6 +48,17 @@ data = [
 #    □   #
 #   .    #
 ##########
+""",
+    """
+########
+###   ##
+#.a□  ##
+### □.##
+#.##□ ##
+# # . ##
+#□ ■□□.#
+#   .  #
+########
 """
 ]
 
@@ -142,30 +159,43 @@ def dfs(board: BoardManager,renderer : Renderer = None):
 #                      S.push( w )         
 #                     mark w as visited
 
-level = 0  
+level = 3  
 isRender = False
 sokoban = BoardManager(data[level])
 
 start = time.time()
+heap = hpy()
+heap.setref()
+heap_status = heap.heap()
 
-solution=bfs(sokoban)
+
+solution=bfs(sokoban) #bfs(board: BoardManager,renderer : Renderer = None):
+
 stop = time.time()
-print("The time of the run:", stop - start,' seconds')
-
+print("The time of the run soKoban Engine :", stop - start,' seconds')
+heap_status2 = heap.heap()
+print("\nMemory Usage After Creation Of soKoban Engine : ", heap_status2.size - heap_status.size, " bytes")
+print("number of action : ",len(solution))
+print("-----------------------------------------------\n")
 print(solution)
+
 
 sokoban_solution = BoardManager(data[level])
 renderer = Renderer(sokoban_solution).setCaption("Sokoban")
 renderer.render()
+
+is_buttonclick = False
+
 while True:
+
     for event in pygame.event.get():
         if event.type==pygame.MOUSEBUTTONDOWN:
-            while len(solution)>0:
-                sokoban_solution.push(solution.pop(0))
-                renderer.fromInstance(sokoban_solution).render()
-                pygame.time.wait(500)
+            is_buttonclick = True
+
         if event.type == pygame.QUIT:
             pygame.quit()
     
-
-
+    if is_buttonclick == True and len(solution) > 0:
+        sokoban_solution.push(solution.pop(0))
+        renderer.fromInstance(sokoban_solution).render()
+        pygame.time.wait(50)

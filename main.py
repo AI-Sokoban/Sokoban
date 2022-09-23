@@ -41,10 +41,21 @@ data = [
 #    □   #
 #   .    #
 ##########
+""",
+    """
+########
+###   ##
+#.a□  ##
+### □.##
+#.##□ ##
+# # . ##
+#□ ■□□.#
+#   .  #
+########
 """
 ]
 
-level = 0
+level = 3
 sokoban = BoardManager(data[level])
 
 renderer = Renderer(sokoban).setCaption("Sokoban")
