@@ -6,6 +6,10 @@ from collections import deque
 # renderer
 from render import Renderer
 import msvcrt
+import pygame
+
+import time
+
 
 # 8x8
 data = [
@@ -93,11 +97,75 @@ def bfs(board: BoardManager,renderer : Renderer = None):
                     return solution(childState)
                 queue.append(childState)
 
-level = 0  
-isRender = True
-sokoban = BoardManager(data[level])
-renderer = Renderer(sokoban).setCaption("Sokoban")
+def dfs(board: BoardManager,renderer : Renderer = None):
+    initialState = ProblemState(board)
+    visited = deque([initialState])
+    if initialState.board.isGameOver():
+        return solution(initialState)
 
+    exploredSet = set()
+
+    while len(visited) >0:
+        state = visited.pop()
+        exploredSet.add(state)
+
+        for action in state.board.getValidActions():
+            newBoard = state.board.push(action, True)
+                        #newBoard Renderer
+            if renderer : 
+                renderer.fromInstance(newBoard).render()
+                # wait for input to change render
+                # msvcrt.getch()
+                # time delay for renderer only
+                time.sleep(0.01)
+
+            childState = ProblemState(newBoard,action,state)
+
+            if (childState not in exploredSet) and (childState not in visited):
+                if childState.board.isGameOver():
+                    return solution(childState)
+                visited.append(childState)
+
+
+
+# source vertex
+#       let S be stack
+#       S.push( s )            //Inserting s in stack 
+#       mark s as visited.
+#       while ( S is not empty):
+#           //Pop a vertex from stack to visit next
+#           v  =  S.top( )
+#          S.pop( )
+#          //Push all the neighbours of v in stack that are not visited   
+#         for all neighbours w of v in Graph G:
+#             if w is not visited :
+#                      S.push( w )         
+#                     mark w as visited
+
+level = 0  
+isRender = False
+sokoban = BoardManager(data[level])
+
+start = time.time()
+
+solution=bfs(sokoban)
+stop = time.time()
+print("The time of the run:", stop - start,' seconds')
+
+print(solution)
+
+sokoban_solution = BoardManager(data[level])
+renderer = Renderer(sokoban_solution).setCaption("Sokoban")
 renderer.render()
-print(bfs(sokoban,renderer if isRender else None))
+while True:
+    for event in pygame.event.get():
+        if event.type==pygame.MOUSEBUTTONDOWN:
+            while len(solution)>0:
+                sokoban_solution.push(solution.pop(0))
+                renderer.fromInstance(sokoban_solution).render()
+                pygame.time.wait(500)
+        if event.type == pygame.QUIT:
+            pygame.quit()
+    
+
 
