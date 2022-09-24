@@ -4,6 +4,7 @@ import pygame
 import random
 
 from render import Renderer
+
 # a = player
 # @ = player ที่ทับบน goal
 # □ = block ที่ไม่อยู่ตรง goal
@@ -52,7 +53,7 @@ data = [
 #□ ■□□.#
 #   .  #
 ########
-"""
+""",
 ]
 
 level = 3
@@ -80,9 +81,8 @@ while True:
                 level += 1
                 level = level % len(data)
                 print("You win!")
-                font = pygame.font.Font('freesansbold.ttf', 32)
-                text = font.render(
-                    'You win!', True, (255, 255, 255), (0, 0, 0))
+                font = pygame.font.Font("freesansbold.ttf", 32)
+                text = font.render("You win!", True, (255, 255, 255), (0, 0, 0))
                 textRect = text.get_rect()
                 textRect.center = (300, 200)
                 renderer.screen.blit(text, textRect)
@@ -91,7 +91,6 @@ while True:
                 # clear screen
                 renderer.clear()
                 sokoban.genNewBoard(data[level])
-                
+
             renderer.render()
             print(sokoban)
-

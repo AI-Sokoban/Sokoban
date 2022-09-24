@@ -1,4 +1,3 @@
-
 PLAYER = "a"
 PLAYER_ON_GOAL = "@"
 BOX = "□"

@@ -33,7 +33,7 @@ data = [
 #    □   #
 #   .    #
 ##########
-"""
+""",
 ]
 
 level = 0
@@ -51,8 +51,7 @@ visitedState = set()
 visitedState.add(sokoban)
 
 
-
-print('sokoban',hash(sokoban))
-print('sokoban2',hash(sokoban2))
-print('sokoban==sokoban2',sokoban==sokoban2)
-print("sokoban2 in visitedState",sokoban2 in visitedState)
+print("sokoban", hash(sokoban))
+print("sokoban2", hash(sokoban2))
+print("sokoban==sokoban2", sokoban == sokoban2)
+print("sokoban2 in visitedState", sokoban2 in visitedState)
