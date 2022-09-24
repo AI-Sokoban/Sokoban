@@ -2,8 +2,8 @@ import time
 import os
 from datetime import datetime
 from board import BoardManager
-
 from collections import deque
+from map import maps
 
 # renderer
 from render import Renderer
@@ -17,52 +17,6 @@ import time
 import guppy
 from guppy import hpy
 import numpy as np
-
-
-# 8x8
-data = [
-    """
-########
-#      #
-##a   ##
-##.□■  #
-##  #  #
-#      #
-#      #
-########
-""",
-    """
-########
-#      #
-##  a ##
-##.□□  #
-##  #  #
-#      #
-#   .  #
-########
-""",
-    """
-##########
-#        #
-##  a   ##
-##.  □   #
-##  #    #
-#    □   #
-#   .    #
-##########
-""",
-    """
-########
-###   ##
-#.a□  ##
-### □.##
-#.##□ ##
-# # . ##
-#□ ■□□.#
-#   .  #
-########
-""",
-]
 
 
 class ProblemState:
@@ -169,9 +123,9 @@ def dfs(board: BoardManager, renderer: Renderer = None):
 #                      S.push( w )
 #                     mark w as visited
 
-level = 1
+level = 0
 isRender = False
-sokoban = BoardManager(data[level])
+sokoban = BoardManager(maps[level])
 
 start = time.time()
 heap = hpy()
@@ -180,7 +134,7 @@ heap_status = heap.heap()
 
 
 # bfs(board: BoardManager,renderer : Renderer = None):
-solution, detail = dfs(sokoban)
+solution, detail = bfs(sokoban)
 
 stop = time.time()
 heap_status2 = heap.heap()
@@ -204,6 +158,8 @@ with open(relPath, "w") as f:
     actionString = " ".join(mapObj)
     f.write(actionString + "\n")
 
+    f.write(f"Number of action: {len(solution)}\n")
+
     f.write(f"Time usage: {timeUsage} seconds\n")
 
     f.write(f"Memory usage: {memoryUsage} bytes\n")
@@ -223,7 +179,7 @@ print("-----------------------------------------------\n")
 print(solution)
 
 
-sokoban_solution = BoardManager(data[level])
+sokoban_solution = BoardManager(maps[level])
 renderer = Renderer(sokoban_solution).setCaption("Sokoban")
 renderer.render()
 
