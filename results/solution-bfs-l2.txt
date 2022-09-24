@@ -1,0 +1,6 @@
+Finished at: 24/09/2022, 23:21:52
+Node generated: 3134
+right right down left left left right right down down right down left
+Time usage: 129.2566533088684 seconds
+Memory usage: 524 bytes
+

@@ -1,0 +1,7 @@
+Finished at: 24/09/2022, 23:45:24
+Node generated: 1491
+down down right up left up up right right down left up left down
+Number of action: 14
+Time usage: 15.08188796043396 seconds
+Memory usage: 524 bytes
+
