@@ -20,10 +20,11 @@ import numpy as np
 
 
 class ProblemState:
-    def __init__(self, board: BoardManager, action: str = None, prevState=None):
+    def __init__(self, board: BoardManager, action: str = None, prevState = None, depth = None):
         self.board = board
         self.action = action
         self.prevState = prevState
+        self.depth = depth
 
     def __hash__(self):
         return self.board.__hash__()
@@ -41,10 +42,10 @@ def solution(state: ProblemState):
     return list(reversed(result))
 
 
-def bfs(board: BoardManager, renderer: Renderer = None):
+def bfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
     detail = {"alg": "bfs", "nodeGenerated": 1}
 
-    initialState = ProblemState(board)
+    initialState = ProblemState(board, depth=0)
     queue = deque([initialState])
 
     if initialState.board.isGameOver():
@@ -52,31 +53,38 @@ def bfs(board: BoardManager, renderer: Renderer = None):
 
     exploredSet = set()
 
+    oldDepth = initialState.depth
     while len(queue) > 0:
         state = queue.popleft()
         exploredSet.add(state)
         detail["nodeGenerated"] += 1
 
+        currentDepth = state.depth
+        if verbose:
+            if currentDepth > oldDepth:
+                print(f"Depth: {currentDepth}, Cumulative node: {detail['nodeGenerated']}")
+
         for action in state.board.getValidActions():
-            newBoard = state.board.push(action, True)
+            newBoard = state.board.push(action, alloc=True)
 
             # newBoard Renderer
             if renderer:
                 renderer.fromInstance(newBoard).render()
-                # wait for input to change render
-                # msvcrt.getch()
-                # time delay for renderer only
                 time.sleep(0.01)
 
-            childState = ProblemState(newBoard, action, state)
+            childState = ProblemState(newBoard, action, state, depth=state.depth + 1)
 
             if (childState not in exploredSet) and (childState not in queue):
                 if childState.board.isGameOver():
+                    if verbose:
+                        print(f"Depth: {childState.depth}, Cumulative node: {detail['nodeGenerated']}")
                     return solution(childState), detail
                 queue.append(childState)
+        
+        oldDepth = currentDepth
 
 
-def dfs(board: BoardManager, renderer: Renderer = None):
+def dfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
     detail = {"alg": "dfs", "nodeGenerated": 1}
 
     initialState = ProblemState(board)
@@ -92,13 +100,10 @@ def dfs(board: BoardManager, renderer: Renderer = None):
         detail["nodeGenerated"] += 1
 
         for action in state.board.getValidActions():
-            newBoard = state.board.push(action, True)
+            newBoard = state.board.push(action, alloc=True)
             # newBoard Renderer
             if renderer:
                 renderer.fromInstance(newBoard).render()
-                # wait for input to change render
-                # msvcrt.getch()
-                # time delay for renderer only
                 time.sleep(0.01)
 
             childState = ProblemState(newBoard, action, state)
@@ -107,6 +112,7 @@ def dfs(board: BoardManager, renderer: Renderer = None):
                 if childState.board.isGameOver():
                     return solution(childState), detail
                 visited.append(childState)
+            
 
 
 # source vertex
@@ -123,7 +129,7 @@ def dfs(board: BoardManager, renderer: Renderer = None):
 #                      S.push( w )
 #                     mark w as visited
 
-level = 0
+level = 2
 isRender = False
 sokoban = BoardManager(maps[level])
 
@@ -134,7 +140,8 @@ heap_status = heap.heap()
 
 
 # bfs(board: BoardManager,renderer : Renderer = None):
-solution, detail = bfs(sokoban)
+
+solution, detail = dfs(sokoban, verbose=True)
 
 stop = time.time()
 heap_status2 = heap.heap()
