@@ -12,7 +12,6 @@ method restore ในทุก class จะทำงานถูกต้อง�
 
 
 class Up:
-
     @staticmethod
     def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
@@ -22,16 +21,16 @@ class Up:
             newBoard = copy.deepcopy(board)
 
         boardlist = newBoard.board_lst
-        
+
         isBoxPush = False
-        #move กล่อง ถ้ามี
-        if boardlist[i-1][j] in BLOCK:
-            boardlist[i-1][j] = GOAL if boardlist[i-1][j] == BOX_ON_GOAL else EMPTY
-            boardlist[i-2][j] = BOX_ON_GOAL if boardlist[i-2][j] == GOAL else BOX
+        # move กล่อง ถ้ามี
+        if boardlist[i - 1][j] in BLOCK:
+            boardlist[i - 1][j] = GOAL if boardlist[i - 1][j] == BOX_ON_GOAL else EMPTY
+            boardlist[i - 2][j] = BOX_ON_GOAL if boardlist[i - 2][j] == GOAL else BOX
             isBoxPush = True
 
-        #move player
-        boardlist[i-1][j] = PLAYER_ON_GOAL if boardlist[i-1][j] == GOAL else PLAYER
+        # move player
+        boardlist[i - 1][j] = PLAYER_ON_GOAL if boardlist[i - 1][j] == GOAL else PLAYER
         boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
         newBoard.playerI -= 1
@@ -48,20 +47,23 @@ class Up:
 
         boardlist = newBoard.board_lst
 
-        boardlist[i+1][j] = PLAYER if boardlist[i+1][j] == EMPTY else PLAYER_ON_GOAL
+        boardlist[i + 1][j] = PLAYER if boardlist[i + 1][j] == EMPTY else PLAYER_ON_GOAL
         if isBoxPush:
             boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
-            boardlist[i-1][j] = EMPTY if boardlist[i-1][j] == BOX else GOAL
+            boardlist[i - 1][j] = EMPTY if boardlist[i - 1][j] == BOX else GOAL
         else:
             boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
 
         newBoard.playerI += 1
 
         return newBoard
-        
+
+    @staticmethod
+    def __str__():
+        return "up"
+
 
 class Down:
-
     @staticmethod
     def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
@@ -73,14 +75,14 @@ class Down:
         boardlist = newBoard.board_lst
 
         isBoxPush = False
-        #move กล่อง ถ้ามี
-        if boardlist[i+1][j] in BLOCK:
-            boardlist[i+1][j] = GOAL if boardlist[i+1][j] == BOX_ON_GOAL else EMPTY
-            boardlist[i+2][j] = BOX_ON_GOAL if boardlist[i+2][j] == GOAL else BOX
+        # move กล่อง ถ้ามี
+        if boardlist[i + 1][j] in BLOCK:
+            boardlist[i + 1][j] = GOAL if boardlist[i + 1][j] == BOX_ON_GOAL else EMPTY
+            boardlist[i + 2][j] = BOX_ON_GOAL if boardlist[i + 2][j] == GOAL else BOX
             isBoxPush = True
 
-        #move player
-        boardlist[i+1][j] = PLAYER_ON_GOAL if boardlist[i+1][j] == GOAL else PLAYER
+        # move player
+        boardlist[i + 1][j] = PLAYER_ON_GOAL if boardlist[i + 1][j] == GOAL else PLAYER
         boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
         newBoard.playerI += 1
@@ -97,20 +99,23 @@ class Down:
 
         boardlist = newBoard.board_lst
 
-        boardlist[i-1][j] = PLAYER if boardlist[i-1][j] == EMPTY else PLAYER_ON_GOAL
+        boardlist[i - 1][j] = PLAYER if boardlist[i - 1][j] == EMPTY else PLAYER_ON_GOAL
         if isBoxPush:
             boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
-            boardlist[i+1][j] = EMPTY if boardlist[i+1][j] == BOX else GOAL
+            boardlist[i + 1][j] = EMPTY if boardlist[i + 1][j] == BOX else GOAL
         else:
             boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
 
         newBoard.playerI -= 1
 
         return newBoard
+
+    @staticmethod
+    def __str__():
+        return "down"
 
 
 class Left:
-
     @staticmethod
     def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
@@ -122,14 +127,14 @@ class Left:
         boardlist = newBoard.board_lst
 
         isBoxPush = False
-        #move กล่อง ถ้ามี
-        if boardlist[i][j-1] in BLOCK:
-            boardlist[i][j-1] = GOAL if boardlist[i][j-1] == BOX_ON_GOAL else EMPTY
-            boardlist[i][j-2] = BOX_ON_GOAL if boardlist[i][j-2] == GOAL else BOX
+        # move กล่อง ถ้ามี
+        if boardlist[i][j - 1] in BLOCK:
+            boardlist[i][j - 1] = GOAL if boardlist[i][j - 1] == BOX_ON_GOAL else EMPTY
+            boardlist[i][j - 2] = BOX_ON_GOAL if boardlist[i][j - 2] == GOAL else BOX
             isBoxPush = True
 
-        #move player
-        boardlist[i][j-1] = PLAYER_ON_GOAL if boardlist[i][j-1] == GOAL else PLAYER
+        # move player
+        boardlist[i][j - 1] = PLAYER_ON_GOAL if boardlist[i][j - 1] == GOAL else PLAYER
         boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
         newBoard.playerJ -= 1
@@ -146,20 +151,23 @@ class Left:
 
         boardlist = newBoard.board_lst
 
-        boardlist[i][j+1] = PLAYER if boardlist[i][j+1] == EMPTY else PLAYER_ON_GOAL
+        boardlist[i][j + 1] = PLAYER if boardlist[i][j + 1] == EMPTY else PLAYER_ON_GOAL
         if isBoxPush:
             boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
-            boardlist[i][j-1] = EMPTY if boardlist[i][j-1] == BOX else GOAL
+            boardlist[i][j - 1] = EMPTY if boardlist[i][j - 1] == BOX else GOAL
         else:
             boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
 
         newBoard.playerJ += 1
 
         return newBoard
+
+    @staticmethod
+    def __str__():
+        return "left"
 
 
 class Right:
-    
     @staticmethod
     def execute(board, alloc=False):
         i, j = board.playerI, board.playerJ
@@ -171,14 +179,14 @@ class Right:
         boardlist = newBoard.board_lst
 
         isBoxPush = False
-        #move กล่อง ถ้ามี
-        if boardlist[i][j+1] in BLOCK:
-            boardlist[i][j+1] = GOAL if boardlist[i][j+1] == BOX_ON_GOAL else EMPTY
-            boardlist[i][j+2] = BOX_ON_GOAL if boardlist[i][j+2] == GOAL else BOX
+        # move กล่อง ถ้ามี
+        if boardlist[i][j + 1] in BLOCK:
+            boardlist[i][j + 1] = GOAL if boardlist[i][j + 1] == BOX_ON_GOAL else EMPTY
+            boardlist[i][j + 2] = BOX_ON_GOAL if boardlist[i][j + 2] == GOAL else BOX
             isBoxPush = True
 
-        #move player
-        boardlist[i][j+1] = PLAYER_ON_GOAL if boardlist[i][j+1] == GOAL else PLAYER
+        # move player
+        boardlist[i][j + 1] = PLAYER_ON_GOAL if boardlist[i][j + 1] == GOAL else PLAYER
         boardlist[i][j] = GOAL if boardlist[i][j] == PLAYER_ON_GOAL else EMPTY
 
         newBoard.playerJ += 1
@@ -195,13 +203,17 @@ class Right:
 
         boardlist = newBoard.board_lst
 
-        boardlist[i][j-1] = PLAYER if boardlist[i][j-1] == EMPTY else PLAYER_ON_GOAL
+        boardlist[i][j - 1] = PLAYER if boardlist[i][j - 1] == EMPTY else PLAYER_ON_GOAL
         if isBoxPush:
             boardlist[i][j] = BOX if boardlist[i][j] == PLAYER else BOX_ON_GOAL
-            boardlist[i][j+1] = EMPTY if boardlist[i][j+1] == BOX else GOAL
+            boardlist[i][j + 1] = EMPTY if boardlist[i][j + 1] == BOX else GOAL
         else:
             boardlist[i][j] = EMPTY if boardlist[i][j] == PLAYER else GOAL
 
         newBoard.playerJ -= 1
 
         return newBoard
+
+    @staticmethod
+    def __str__():
+        return "right"
