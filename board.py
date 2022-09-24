@@ -180,7 +180,7 @@ class BoardManager:
 
     def __eq__(self, other):
         if isinstance(other, BoardManager):
-            return hash(self) == hash(other)
+            return self.board_lst == other.board_lst
         return False
 
     """
