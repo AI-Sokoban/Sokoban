@@ -129,7 +129,7 @@ def dfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
 #                      S.push( w )
 #                     mark w as visited
 
-level = 2
+level = 7
 isRender = False
 sokoban = BoardManager(maps[level])
 
