@@ -88,14 +88,14 @@ def dfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
     detail = {"alg": "dfs", "nodeGenerated": 1}
 
     initialState = ProblemState(board)
-    visited = deque([initialState])
+    stack = deque([initialState])
     if initialState.board.isGameOver():
         return solution(initialState), detail
 
     exploredSet = set()
 
-    while len(visited) > 0:
-        state = visited.pop()
+    while len(stack) > 0:
+        state = stack.pop()
         exploredSet.add(state)
         detail["nodeGenerated"] += 1
 
@@ -108,26 +108,13 @@ def dfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
 
             childState = ProblemState(newBoard, action, state)
 
-            if (childState not in exploredSet) and (childState not in visited):
+            if (childState not in exploredSet) and (childState not in stack):
                 if childState.board.isGameOver():
                     return solution(childState), detail
-                visited.append(childState)
+                stack.append(childState)
             
 
 
-# source vertex
-#       let S be stack
-#       S.push( s )            //Inserting s in stack
-#       mark s as visited.
-#       while ( S is not empty):
-#           //Pop a vertex from stack to visit next
-#           v  =  S.top( )
-#          S.pop( )
-#          //Push all the neighbours of v in stack that are not visited
-#         for all neighbours w of v in Graph G:
-#             if w is not visited :
-#                      S.push( w )
-#                     mark w as visited
 
 level = 7
 isRender = False
