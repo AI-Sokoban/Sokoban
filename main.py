@@ -12,7 +12,7 @@ from map import maps
 # ■ = block ที่อยู่ตรง goal
 # . = goal
 
-level = 3
+level = 0
 sokoban = BoardManager(maps[level])
 
 renderer = Renderer(sokoban).setCaption("Sokoban")
