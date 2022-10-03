@@ -68,6 +68,7 @@ class BoardManager:
     def getBoardList(self):
         return self.board_lst
 
+    # Not use
     def updateBoard(self, new_board):
         self.board_lst = new_board
 
@@ -76,6 +77,7 @@ class BoardManager:
         self.playerI = i
         self.playerJ = j
 
+    # หาตำแหน่ง Player
     def playerPosition(self):
         for i in range(len(self.board_lst)):
             for j in range(len(self.board_lst[i])):
@@ -85,6 +87,7 @@ class BoardManager:
                 ):
                     return i, j
 
+    # เช็คว่าเกมจบหรือยัง
     def isGameOver(self):
         for i in range(len(self.board_lst)):
             for j in range(len(self.board_lst[i])):
@@ -104,6 +107,7 @@ class BoardManager:
         self.board_lst = board_
         self.setPlayerPosition()
 
+    # เช็คว่า player เดินไปทางไหนได้บ้าง
     def checkMovingState(self):
         boardlist = self.board_lst
         i, j = self.playerI, self.playerJ
@@ -148,6 +152,7 @@ class BoardManager:
 
         return up, down, left, right
 
+
     def getValidActions(self):
         actions = self.checkMovingState()
 
@@ -188,16 +193,15 @@ class BoardManager:
 
     return(BoardManager) - board ใน state ใหม่หลังจาก execute action ไปแล้ว
     """
-
     def push(self, action, alloc=False):
         newBoard, isBoxPush = action.execute(self, alloc)
         newBoard.history.append((action, isBoxPush))
         return newBoard
 
+    # Not use
     """
     return(tuple[oldboard, action]) - action ล่าสุดกับ board ใน state เก่า
     """
-
     def pop(self, alloc=False):
         recentlyAction, isBoxPush = self.history.pop()
         board = recentlyAction.restore(self, isBoxPush, alloc)

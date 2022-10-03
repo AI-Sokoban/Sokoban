@@ -14,17 +14,17 @@ import time
 
 
 # test memory
-import guppy
 from guppy import hpy
 import numpy as np
 
 
 class ProblemState:
-    def __init__(self, board: BoardManager, action: str = None, prevState = None, depth = None):
+    def __init__(self, board: BoardManager, action = None, prevState = None, depth = None):
         self.board = board
-        self.action = action
-        self.prevState = prevState
-        self.depth = depth
+        self.action = action # action ที่ทำผ่านมาสู่ ProblemState นี้
+        self.prevState = prevState # ProblemState ก่อนหน้า
+
+        self.depth = depth # เก็บไว้แสดงผล debug
 
     def __hash__(self):
         return self.board.__hash__()
@@ -53,17 +53,18 @@ def bfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
 
     exploredSet = set()
 
-    oldDepth = initialState.depth
+    oldDepth = initialState.depth # เอาไว้แสดงผล
     while len(queue) > 0:
         state = queue.popleft()
         exploredSet.add(state)
         detail["nodeGenerated"] += 1
 
-        currentDepth = state.depth
+        currentDepth = state.depth # เอาไว้แสดงผล
         if verbose:
             if currentDepth > oldDepth:
                 print(f"Depth: {currentDepth}, Cumulative node: {detail['nodeGenerated']}")
 
+        # ทำ action ที่สามารถทำได้
         for action in state.board.getValidActions():
             newBoard = state.board.push(action, alloc=True)
 
@@ -81,7 +82,7 @@ def bfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
                     return solution(childState), detail
                 queue.append(childState)
         
-        oldDepth = currentDepth
+        oldDepth = currentDepth # เอาไว้แสดงผล
 
 
 def dfs(board: BoardManager, renderer: Renderer = None, verbose: bool = False):
@@ -125,8 +126,6 @@ heap = hpy()
 heap.setref()
 heap_status = heap.heap()
 
-
-# bfs(board: BoardManager,renderer : Renderer = None):
 
 solution, detail = dfs(sokoban, verbose=True)
 
